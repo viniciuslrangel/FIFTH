@@ -1,0 +1,5 @@
+# Development files (sample codes, etc)
+dev/
+
+# CMake files
+cmake-build-*/
