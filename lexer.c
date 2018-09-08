@@ -7,7 +7,7 @@
 #include "vm.h"
 #include "words.h"
 
-#define IS_NUMBER(x) ('0' <= x && x <= '9')
+#define IS_NUMBER(x) ('0' <= (x) && (x) <= '9')
 #define TOKEN_ERROR(x) FATAL("Error on token %d:%d\n%s", currentLine, currentColumn, x)
 #define BLANK() state = STATE_BLANK
 
@@ -31,12 +31,12 @@ void Lexer(char *buffer, unsigned long length) {
         char cNext = c ? buffer[pos + 1] : c;
 
         bool isNumber = IS_NUMBER(c);
-        bool eof = c == '\0';
+        bool eof = pos == length;
         bool isBlank = c == ' ' || c == '\n' || c == '\r' || eof;
 
         switch (state) {
             case STATE_BLANK: {
-                if (c == '-' || c == '.' || isNumber) {
+                if ((c == '-' && IS_NUMBER(cNext) && cNext == '.') || c == '.' || isNumber) {
                     state = STATE_NUMBER;
                     stringStart = pos;
                 } else if (c == '"') {
