@@ -28,23 +28,31 @@ ProgramStack PStack_new();
 
 struct PElement PStack_pop(ProgramStack stack);
 
+struct PElement PStack_popIndex(ProgramStack stack, unsigned int index);
+
+struct PElement PStack_peek(ProgramStack stack);
+
+struct PElement PStack_peekIndex(ProgramStack stack, unsigned int index);
+
 #define STACK_NUMBER(x) (struct PElement) {\
     .type = DATATYPE_NUMBER,\
     .data = {\
-        .number = x\
+        .number = (x)\
     }\
 }
 
 #define STACK_STR(x) (struct PElement) {\
     .type = DATATYPE_STRING,\
     .data = {\
-        .string = x\
+        .string = (x)\
     }\
 }
 
-#define POP_NUMBER(x, y) __MACRO_FUNCTION_BODY( struct PElement e = PStack_pop(y); if (e.type != DATATYPE_NUMBER) FATAL("Number is required"); x = e.data.number; )
+#define POP_NUMBER(x, y) __MACRO_FUNCTION_BODY( struct PElement e = PStack_pop(y); if (e.type != DATATYPE_NUMBER) FATAL("Number is required"); (x) = e.data.number; )
 
 void PStack_push(ProgramStack stack, struct PElement in);
+
+void PStack_pushIndex(ProgramStack stack, struct PElement in, unsigned int index);
 
 unsigned int PStack_length(ProgramStack stack);
 

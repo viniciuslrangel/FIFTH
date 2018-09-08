@@ -23,12 +23,25 @@ ProgramStack PStack_new() {
 }
 
 struct PElement PStack_pop(ProgramStack stack) {
-    if (stack->length == 0) {
-        FATAL("Stack empty");
+    return PStack_popIndex(stack, 0);
+}
+
+struct PElement PStack_popIndex(ProgramStack stack, unsigned int index) {
+    if (stack->length <= index) {
+        FATAL("Stack out of bound");
     }
     stack->length--;
     struct ProgramNode *node = stack->node;
-    stack->node = node->bottom;
+    if (index == 0) {
+        stack->node = node->bottom;
+    } else {
+        for (unsigned int i = 1; i < index; ++i) {
+            node = node->bottom;
+        }
+        struct ProgramNode *top = node;
+        node = node->bottom;
+        top->bottom = node->bottom;
+    }
     struct PElement elem = {
             node->type,
             node->data
@@ -37,13 +50,49 @@ struct PElement PStack_pop(ProgramStack stack) {
     return elem;
 }
 
+struct PElement PStack_peek(ProgramStack stack) {
+    return PStack_peekIndex(stack, 0);
+}
+
+struct PElement PStack_peekIndex(ProgramStack stack, unsigned int index) {
+    if (stack->length <= index) {
+        FATAL("Stack out of bound");
+    }
+    struct ProgramNode *node = stack->node;
+    for (unsigned int i = 0; i < index; ++i) {
+        node = node->bottom;
+    }
+    return (struct PElement) {
+            node->type,
+            node->data
+    };
+}
+
 void PStack_push(ProgramStack stack, struct PElement in) {
+    return PStack_pushIndex(stack, in, 0);
+}
+
+void PStack_pushIndex(ProgramStack stack, struct PElement in, unsigned int index) {
+    if (index > stack->length) {
+        FATAL("Pushing value out bound of the stack");
+    }
     stack->length++;
     struct ProgramNode *node = malloc(sizeof(struct ProgramNode));
     node->type = in.type;
     node->data = in.data;
-    node->bottom = stack->node;
-    stack->node = node;
+
+    if (index == 0) {
+        node->bottom = stack->node;
+        stack->node = node;
+    } else {
+        struct ProgramNode *head = stack->node;
+        for(int i = 1; i < index; ++i) {
+            head = head->bottom;
+        }
+        struct ProgramNode *tmp = head->bottom;
+        head->bottom = node;
+        node->bottom = tmp;
+    }
 }
 
 unsigned int PStack_length(ProgramStack stack) {
