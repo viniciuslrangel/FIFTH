@@ -7,49 +7,46 @@
 #include "words.h"
 #include "stdlib/std_words.h"
 
-struct InstructionStack {
-    struct ProgramOp op;
-    struct InstructionStack *next;
-};
-
-struct {
-    struct InstructionStack *firstInstruction;
-    struct InstructionStack *lastInstruction;
-    struct InstructionStack *currentExecuting;
-    ProgramStack stack;
-    int line;
-} VmState = {NULL, NULL, NULL, 0};
-
-void InsertInstruction(struct ProgramOp op) {
-    struct InstructionStack *newStack = malloc(sizeof(struct InstructionStack));
-    if(!newStack) {
-        FATAL("Cannot allocate memory");
-    }
-    newStack->op = op;
-    if (VmState.firstInstruction == NULL) {
-        VmState.firstInstruction = newStack;
-    }
-    if (VmState.lastInstruction != NULL) {
-        VmState.lastInstruction->next = newStack;
-    }
-    VmState.lastInstruction = newStack;
+VmState CreateVm() {
+    VmState s = malloc(sizeof(struct ___VmState));
+    s->instructionsLength = 10;
+    s->instructions = malloc(sizeof(struct ProgramOp) * s->instructionsLength);
+    s->currentInstruction = 0;
+    s->stack = NULL;
+    return s;
 }
 
-number_t RunVm() {
-    VmState.stack = PStack_new();
+VmState mainState = {NULL, NULL, NULL, 0};
+
+void InsertInstruction(VmState state, struct ProgramOp op) {
+    if (state->currentInstruction >= state->instructionsLength) {
+        state->instructionsLength = (unsigned long) (state->instructionsLength * 1.5);
+        CHECK_NOT_NULL(
+                state->instructions = realloc(state->instructions,
+                                              sizeof(struct ProgramOp) * state->instructionsLength),
+                "Cannot allocate memory for storing the program instructions"
+        );
+    }
+    state->instructions[state->currentInstruction++] = op;
+}
+
+number_t RunVm(VmState vmState) {
+
+    if(vmState->instructionsLength == 0)
+        return 0;
+
+    vmState->currentInstruction = 0;
+    vmState->stack = PStack_new();
     RegisterStdWords();
 
-    VmState.currentExecuting = VmState.firstInstruction;
+    struct ProgramOp op;
+    while ((op = vmState->instructions[vmState->currentInstruction++]), vmState->currentInstruction <= vmState->instructionsLength) {
 
-    struct InstructionStack *current;
-    while ((current = VmState.currentExecuting) != NULL) {
-
-        struct ProgramOp op = current->op;
         switch (op.op) {
             case OP_NOP:
                 break;
             case OP_PUSH_N: {
-                PStack_push(VmState.stack, (struct PElement) {
+                PStack_push(vmState->stack, (struct PElement) {
                         .type = DATATYPE_NUMBER,
                         .data = {
                                 .number = op.data.number
@@ -58,7 +55,7 @@ number_t RunVm() {
             }
                 break;
             case OP_PUSH_S: {
-                PStack_push(VmState.stack, (struct PElement) {
+                PStack_push(vmState->stack, (struct PElement) {
                         .type = DATATYPE_STRING,
                         .data = {
                                 .string = op.data.str
@@ -69,21 +66,19 @@ number_t RunVm() {
             case OP_WORD_CALL: {
                 WordCall word = FindWordByName(op.data.str);
                 CHECK_NOT_NULL(word, "Invalid word");
-                word(VmState.stack);
+                word(vmState->stack);
             }
         }
-        VmState.currentExecuting = current->next;
-        free(current);
     }
     number_t result = 0;
-    if (PStack_length(VmState.stack) > 0) {
-        struct PElement e = PStack_pop(VmState.stack);
+    if (PStack_length(vmState->stack) > 0) {
+        struct PElement e = PStack_pop(vmState->stack);
         if (e.type == DATATYPE_NUMBER) {
             result = e.data.number;
         } else {
             free(e.data.string);
         }
     }
-    PStack_delete(VmState.stack);
+    PStack_delete(vmState->stack);
     return result;
 }

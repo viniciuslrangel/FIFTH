@@ -18,7 +18,9 @@ int main(int argc, char** argv) {
     unsigned long length = readFile(fileName, &data);
     ASSERT(length != 0, "Error reading file. %s", fileName);
 
-    Lexer(data, length);
+    VmState vm = CreateVm();
 
-    return (int) RunVm();
+    Lexer(vm, data, length);
+
+    return (int) RunVm(vm);
 }

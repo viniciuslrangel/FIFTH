@@ -23,7 +23,7 @@ unsigned int currentColumn = 0;
 
 unsigned long stringStart;
 
-void Lexer(char *buffer, unsigned long length) {
+void Lexer(VmState vm, char *buffer, unsigned long length) {
     unsigned long pos = 0;
     while (pos <= length) {
 
@@ -65,7 +65,7 @@ void Lexer(char *buffer, unsigned long length) {
                     struct ProgramOp op;
                     op.op = OP_PUSH_N;
                     op.data.number = n;
-                    InsertInstruction(op);
+                    InsertInstruction(vm, op);
                 }
             }
                 break;
@@ -80,7 +80,7 @@ void Lexer(char *buffer, unsigned long length) {
                     struct ProgramOp op;
                     op.op = OP_PUSH_S;
                     op.data.str = s;
-                    InsertInstruction(op);
+                    InsertInstruction(vm, op);
                 }
             }
                 break;
@@ -95,7 +95,7 @@ void Lexer(char *buffer, unsigned long length) {
                     struct ProgramOp op;
                     op.op = OP_WORD_CALL;
                     op.data.str = s;
-                    InsertInstruction(op);
+                    InsertInstruction(vm, op);
                 }
             }
                 break;

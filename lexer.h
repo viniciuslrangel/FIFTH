@@ -6,9 +6,10 @@
 #define FIFTH_LEXER_H
 
 #include "base.h"
+#include "vm.h"
 
 void PushNumber(number_t number);
 
-void Lexer(char *buffer, unsigned long length);
+void Lexer(VmState vmState, char *buffer, unsigned long length);
 
 #endif //FIFTH_LEXER_H

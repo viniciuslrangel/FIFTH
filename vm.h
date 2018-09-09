@@ -25,8 +25,17 @@ struct ProgramOp {
     } data;
 };
 
-void InsertInstruction(struct ProgramOp);
+typedef struct ___VmState {
+    struct ProgramOp *instructions;
+    unsigned long instructionsLength;
+    unsigned long currentInstruction;
+    ProgramStack stack;
+} *VmState;
 
-number_t RunVm();
+VmState CreateVm();
+
+void InsertInstruction(VmState, struct ProgramOp);
+
+number_t RunVm(VmState vmState);
 
 #endif //FIFTH_VM_H
