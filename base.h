@@ -15,11 +15,12 @@
 
 //region Constants
 
-#define NAME FIFTH
+#define NAME FIFTH FIFTH
 #define NAME_STR "FIFTH"
 
 #define MAJOR_VERSION 0
-#define MINOR_VERSION 1
+#define MINOR_VERSION 0
+#define PATCH_VERSION 1
 
 #ifndef NULL
 #define NULL (void*)0
@@ -63,9 +64,9 @@
 //region Utility
 
 #define ASSERT(x, y, ...) __MACRO_FUNCTION_BODY( if (!(x)) FATAL(y, ##__VA_ARGS__); )
-#define CHECK_NOT_NULL(x, y, ...) ASSERT(x != NULL, y, ##__VA_ARGS__)
+#define CHECK_NOT_NULL(x, y, ...) ASSERT((x) != NULL, y, ##__VA_ARGS__)
 
-#define UPPER(x) ((char)('a' <= x && x <= 'z' ? x + 'A' - 'a' : x))
+#define UPPER(x) ((char)('a' <= (x) && (x) <= 'z' ? (x) + 'A' - 'a' : (x)))
 
 //endregion
 
