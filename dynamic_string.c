@@ -8,16 +8,17 @@
 
 #define SIZE sizeof(char)
 
-struct DString_Data {
+struct ___DString {
     char *raw;
-    int length;
+    size_t length;
 };
 
-DString DString_new() {
-    struct DString_Data *s = malloc(sizeof(struct DString_Data));
-    s->length = 0;
-    s->raw = malloc(sizeof(char));
-    s->raw[0] = 0;
+DString DString_new(char* str) {
+    struct ___DString *s = malloc(sizeof(struct ___DString));
+    size_t length = strlen(str);
+    s->length = length;
+    s->raw = malloc(length + 1);
+    s->raw[length] = 0;
     return s;
 }
 
@@ -25,13 +26,17 @@ int DString_length(DString str) {
     return str->length;
 }
 
+void DString_append(DString str, DString other) {
+    CHECK_NOT_NULL(str->raw = realloc(str->raw, SIZE * (str->length + other->length + 1)), __func__);
+    memcpy(str->raw + str->length, other->raw, (size_t) other->length);
+    str->length += other->length;
+    str->raw[str->length] = 0;
+}
+
 void DString_appendChar(DString str, char c) {
-    char* newStr = realloc(str->raw, SIZE * (++str->length + 1));
-    if(newStr != NULL) {
-        str->raw = newStr;
-        str->raw[str->length - 1] = c;
-        str->raw[str->length] = 0;
-    }
+    CHECK_NOT_NULL(str->raw = realloc(str->raw, SIZE * (++str->length + 1)), __func__);
+    str->raw[str->length - 1] = c;
+    str->raw[str->length] = 0;
 }
 
 char *DString_raw(DString str) {
@@ -40,7 +45,7 @@ char *DString_raw(DString str) {
 
 void DString_clear(DString str) {
     if (str->length != 0) {
-        realloc(str->raw, SIZE);
+        CHECK_NOT_NULL(str->raw = realloc(str->raw, SIZE), __func__);
     }
     str->raw[0] = 0;
 }
@@ -51,7 +56,7 @@ void DString_delete(DString str) {
 }
 
 char *DString_copy(DString str) {
-    char* c = malloc(SIZE * (str->length + 1));
+    char *c = malloc(SIZE * (str->length + 1));
     memcpy(c, str->raw, (size_t) (str->length + 1)); // NOLINT(bugprone-misplaced-widening-cast)
     return c;
 }

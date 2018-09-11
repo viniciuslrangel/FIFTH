@@ -5,19 +5,34 @@
 #ifndef FIRSTLANG_DYNAMIC_STRING_H
 #define FIRSTLANG_DYNAMIC_STRING_H
 
-#include <stdint-gcc.h>
+typedef struct ___DString *DString;
 
-typedef struct DString_Data *DString;
-
-DString DString_new();
+/**
+ * Create new DString
+ * @param str Null-terminated string
+ * @return A new DString storing str as value
+ */
+DString DString_new(char* str);
 
 /**
  * @return The length with the string excluding null-terminated character
  */
 int DString_length(DString);
 
+/**
+ * Append string from second to first
+ */
+void DString_append(DString str, DString other);
+
+/**
+ * Append a character to DString
+ */
 void DString_appendChar(DString, char c);
 
+/**
+ * @return Internal char* pointer, do not free by yousoelf, use #{DString_delete}
+ * @see DString_delete
+ */
 char* DString_raw(DString);
 
 void DString_clear(DString);
