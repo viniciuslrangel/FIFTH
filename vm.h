@@ -7,6 +7,7 @@
 
 #include "base.h"
 #include "program_stack.h"
+#include "dynamic_string.h"
 
 enum OpCode {
     OP_NOP,
@@ -21,7 +22,7 @@ struct ProgramOp {
     enum OpCode op;
     union {
         number_t number;
-        char *str;
+        DString str;
     } data;
 };
 
