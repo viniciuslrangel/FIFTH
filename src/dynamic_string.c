@@ -18,6 +18,7 @@ DString DString_new(char* str) {
     size_t length = strlen(str);
     s->length = length;
     s->raw = malloc(length + 1);
+    memcpy(s->raw, str, length);
     s->raw[length] = 0;
     return s;
 }
