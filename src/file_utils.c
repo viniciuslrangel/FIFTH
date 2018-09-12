@@ -2,7 +2,7 @@
 // Created by vinic on 05/09/18.
 //
 
-#include "fileUtils.h"
+#include "file_utils.h"
 #include "stdio.h"
 
 unsigned long readFile(char *path, char **buffer) {

@@ -16,8 +16,6 @@ VmState CreateVm() {
     return s;
 }
 
-VmState mainState = {NULL, NULL, NULL, 0};
-
 void InsertInstruction(VmState state, struct ProgramOp op) {
     if (state->currentInstruction >= state->instructionsLength) {
         state->instructionsLength = (unsigned long) (state->instructionsLength * 1.5);
@@ -58,13 +56,13 @@ number_t RunVm(VmState vmState) {
                 PStack_push(vmState->stack, (struct PElement) {
                         .type = DATATYPE_STRING,
                         .data = {
-                                .string = op.data.str
+                                .string = DString_raw(op.data.str)
                         }
                 });
             }
                 break;
             case OP_WORD_CALL: {
-                WordCall word = FindWordByName(op.data.str);
+                WordCall word = FindWordByName(DString_raw(op.data.str));
                 CHECK_NOT_NULL(word, "Invalid word");
                 word(vmState->stack);
             }
