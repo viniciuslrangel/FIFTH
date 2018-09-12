@@ -26,6 +26,12 @@
 #define NULL (void*)0
 #endif
 
+#ifndef _FIFTH_TEST
+#include "runtime_impl.h"
+#else
+#include "../test/test_impl.h"
+#endif
+
 #define bool int8_t
 #define true ((int8_t )1)
 #define false ((int8_t )0)

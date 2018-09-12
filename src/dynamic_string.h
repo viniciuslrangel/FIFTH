@@ -39,6 +39,6 @@ void DString_clear(DString);
 
 void DString_delete(DString);
 
-char* DString_copy(DString);
+DString DString_copy(DString);
 
 #endif //FIRSTLANG_DYNAMIC_STRING_H

@@ -55,10 +55,8 @@ void DString_delete(DString str) {
     free(str);
 }
 
-char *DString_copy(DString str) {
-    char *c = malloc(SIZE * (str->length + 1));
-    memcpy(c, str->raw, (size_t) (str->length + 1)); // NOLINT(bugprone-misplaced-widening-cast)
-    return c;
+DString DString_copy(DString str) {
+    return DString_new(DString_raw(str));
 }
 
 #undef SIZE
