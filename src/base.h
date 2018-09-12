@@ -74,6 +74,11 @@
 
 #define UPPER(x) ((char)('a' <= (x) && (x) <= 'z' ? (x) + 'A' - 'a' : (x)))
 
+/**
+ * Converts any expression in true/false value
+ */
+#define BOOL(x) (x) ? true : false
+
 //endregion
 
 #endif //FIFTH_CONST_H
