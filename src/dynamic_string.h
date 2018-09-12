@@ -71,4 +71,38 @@ DString DString_copy(DString);
  */
 DString DString_substr(DString, int begin, int end);
 
+/**
+ * Compares two DString
+ * @return true if both two are equals
+ * @see DString_rawEquals
+ */
+bool DString_equals(DString, DString);
+
+/**
+ * Compares two DString ignoring case
+ * @return true if both two are equals
+ * @see DString_rawEqualsIgnoreCase
+ */
+bool DString_equalsIgnoreCase(DString, DString);
+
+/**
+ * Compares DString with raw char sequence
+ * @return true if both two are equals
+ * @see DString_equals
+ */
+bool DString_rawEquals(DString, char*);
+
+/**
+ * Compares DString with raw char sequence ignoring case
+ * @return true if both two are equals
+ * @see DString_equalsIgnoreCase
+ */
+bool DString_rawEqualsIgnoreCase(DString, char*);
+
+/**
+ * Returns <b>not a copy</b> of the DString in upper case
+ * @return the same DString
+ */
+DString DString_toUpperCase(DString);
+
 #endif //FIRSTLANG_DYNAMIC_STRING_H

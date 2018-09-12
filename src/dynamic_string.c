@@ -101,4 +101,55 @@ DString DString_substr(DString str, int begin, int end) {
     return DString_create(s);
 }
 
+bool DString_equals(DString str, DString other) {
+    if (str->length != other->length) {
+        return false;
+    }
+    for (int i = 0; i < str->length; ++i) {
+        if (str->raw[i] != other->raw[i]) {
+            return false;
+        }
+    }
+    return true;
+}
+
+bool DString_equalsIgnoreCase(DString str, DString other) {
+    if (str->length != other->length) {
+        return false;
+    }
+    for (int i = 0; i < str->length; ++i) {
+        if (UPPER(str->raw[i]) != UPPER(other->raw[i])) {
+            return false;
+        }
+    }
+    return true;
+}
+
+bool DString_rawEquals(DString str, char *other) {
+    int i;
+    for(i = 0; i < str->length; ++i) {
+        if(str->raw[i] != other[i] || other[i] == '\0') {
+            return false;
+        }
+    }
+    return other[i] == '\0' ? true : false;
+}
+
+bool DString_rawEqualsIgnoreCase(DString str, char *other) {
+    int i;
+    for(i = 0; i < str->length; ++i) {
+        if(UPPER(str->raw[i]) != UPPER(other[i]) || other[i] == '\0') {
+            return false;
+        }
+    }
+    return other[i] == '\0' ? true : false;
+}
+
+DString DString_toUpperCase(DString str) {
+    for(int i = 0; i < str->length; ++i) {
+        str->raw[i] = UPPER(str->raw[i]);
+    }
+    return str;
+}
+
 #undef SIZE
