@@ -13,7 +13,7 @@ struct ___DString {
     size_t length;
 };
 
-DString DString_new(char* str) {
+DString DString_new(char *str) {
     struct ___DString *s = malloc(sizeof(struct ___DString));
     size_t length = strlen(str);
     s->length = length;
@@ -23,7 +23,14 @@ DString DString_new(char* str) {
     return s;
 }
 
-int DString_length(DString str) {
+DString DString_create(char *str) {
+    struct ___DString *s = malloc(sizeof(struct ___DString));
+    s->length = strlen(str);
+    s->raw = str;
+    return s;
+}
+
+size_t DString_length(DString str) {
     return str->length;
 }
 
@@ -47,6 +54,7 @@ char *DString_raw(DString str) {
 void DString_clear(DString str) {
     if (str->length != 0) {
         CHECK_NOT_NULL(str->raw = realloc(str->raw, SIZE), __func__);
+        str->length = 0;
     }
     str->raw[0] = 0;
 }
@@ -57,7 +65,40 @@ void DString_delete(DString str) {
 }
 
 DString DString_copy(DString str) {
-    return DString_new(DString_raw(str));
+    return DString_new(str->raw);
+}
+
+DString DString_substr(DString str, int begin, int end) {
+    int length = (int) str->length;
+
+    int first = begin;
+    int last = end;
+
+    if (first < 0) {
+        first = first + length + 1;
+    }
+    if (first > length) {
+        first = length;
+    }
+
+    if (end < 0) {
+        last = length + end + 1;
+    }
+    if (last > length) {
+        last = length;
+    }
+
+    if (first > last) {
+        int tmp = first;
+        first = last;
+        last = tmp;
+    }
+
+    int size = last - first;
+    char *s = malloc(size + 1);
+    memcpy(s, str->raw + first, (size_t) size);
+    s[size] = 0;
+    return DString_create(s);
 }
 
 #undef SIZE
