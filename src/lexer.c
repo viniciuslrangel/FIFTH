@@ -103,7 +103,7 @@ void Lexer(VmState vm, char *filePath, char *buffer, unsigned long length) {
                 if (isBlank) {
                     BLANK();
                     char *s = malloc(pos - stringStart + 1);
-                    for (int i = 0; i < pos - stringStart; ++i) {
+                    for (unsigned long i = 0; i < pos - stringStart; ++i) {
                         s[i] = UPPER(buffer[stringStart + i]);
                     }
                     s[pos - stringStart] = 0;
@@ -120,13 +120,13 @@ void Lexer(VmState vm, char *filePath, char *buffer, unsigned long length) {
                     TOKEN_ERROR("Invalid file name");
                 } else if (c == '>') {
                     char *s = malloc(pos - stringStart);
-                    for (int i = 1; i < pos - stringStart; ++i) {
+                    for (unsigned long i = 1; i < pos - stringStart; ++i) {
                         s[i - 1] = buffer[stringStart + i];
                     }
                     s[pos - stringStart] = 0;
 
                     char *newBuffer;
-                    unsigned long newLength = readFile(s, &newBuffer);
+                    unsigned long newLength = ReadFile(s, &newBuffer);
                     if (newLength) {
                         unsigned int numColumn = currentColumn;
                         unsigned int numLine = currentLine;

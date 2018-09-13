@@ -2,12 +2,13 @@
 // Created by vinic on 05/09/18.
 //
 
+#include <stdio.h>
 #include "file_utils.h"
-#include "stdio.h"
 
-unsigned long readFile(char *path, char **buffer) {
-    FILE *f = fopen(path, "rb");
-    if (!f)
+unsigned long ReadFile(char *path, char **buffer) {
+    FILE *f;
+	errno_t err;
+	if ((err = fopen_s(&f, path, "rb")) != 0)
         return 0UL;
     fseek(f, 0, SEEK_END);
     unsigned long length = (unsigned long) ftell(f);

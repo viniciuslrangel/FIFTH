@@ -69,7 +69,8 @@ struct PElement PStack_peekIndex(ProgramStack stack, unsigned int index) {
 }
 
 void PStack_push(ProgramStack stack, struct PElement in) {
-    return PStack_pushIndex(stack, in, 0);
+    PStack_pushIndex(stack, in, 0);
+	return;
 }
 
 void PStack_pushIndex(ProgramStack stack, struct PElement in, unsigned int index) {
@@ -86,7 +87,7 @@ void PStack_pushIndex(ProgramStack stack, struct PElement in, unsigned int index
         stack->node = node;
     } else {
         struct ProgramNode *head = stack->node;
-        for(int i = 1; i < index; ++i) {
+        for(unsigned int i = 1; i < index; ++i) {
             head = head->bottom;
         }
         struct ProgramNode *tmp = head->bottom;

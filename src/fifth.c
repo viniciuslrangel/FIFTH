@@ -15,7 +15,7 @@ int main(int argc, char** argv) {
     DEBUGLN("Passing %s", fileName);
 
     char* data;
-    unsigned long length = readFile(fileName, &data);
+    unsigned long length = ReadFile(fileName, &data);
     ASSERT(length != 0, "Error reading file. %s", fileName);
 
     VmState vm = CreateVm();

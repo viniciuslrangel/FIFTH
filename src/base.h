@@ -7,7 +7,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <ctype.h>
+#include <stdint.h>
 
 #define __MACRO_FUNCTION_BODY(x) do { x } while(0)
 
@@ -20,7 +20,7 @@
 
 #define MAJOR_VERSION 0
 #define MINOR_VERSION 4
-#define PATCH_VERSION 0
+#define PATCH_VERSION 1
 
 #ifndef NULL
 #define NULL (void*)0
@@ -58,8 +58,8 @@
 #define DEBUG(x, ...) FPRINT(stdout, x, ##__VA_ARGS__)  
 #define DEBUGLN(x, ...) __MACRO_FUNCTION_BODY( DEBUG(x, __VA_ARGS__); PRINT("\n"); )
 #else
-#define DEBUG(...) __MACRO_FUNCTION_BODY()
-#define DEBUGLN(...) __MACRO_FUNCTION_BODY()
+#define DEBUG(...) (void)0
+#define DEBUGLN(...) (void)0
 #endif
 
 //endregion

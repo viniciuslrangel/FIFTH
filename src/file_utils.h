@@ -12,6 +12,6 @@
  * @param buffer Variable to store the buffer
  * @return The file size (if it exists) or -1 on error
  */
-unsigned long readFile(char* path, _OUT_ char** buffer);
+unsigned long ReadFile(char* path, _OUT_ char** buffer);
 
 #endif //FIFTH_FILEBUFFER_H
