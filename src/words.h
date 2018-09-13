@@ -13,8 +13,23 @@ struct WordEntry {
     WordCall func;
 };
 
+struct CustomWordEntry {
+    DString name;
+    unsigned long startIndex;
+};
+
+struct FindWordResult {
+    bool native;
+    union {
+        WordCall native;
+        unsigned long startIndex;
+    } data;
+};
+
 bool RegisterWords(struct WordEntry* entry, int length);
 
-WordCall FindWordByName(char* name);
+void RegisterCustomWords(struct CustomWordEntry cEntry);
+
+struct FindWordResult FindWordByName(char* name);
 
 #endif //FIFTH_STDWORDS_H

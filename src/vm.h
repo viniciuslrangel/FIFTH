@@ -8,6 +8,7 @@
 #include "base.h"
 #include "program_stack.h"
 #include "dynamic_string.h"
+#include "call_stack.h"
 
 enum OpCode {
     OP_NOP,
@@ -26,11 +27,23 @@ struct ProgramOp {
     } data;
 };
 
+enum VmStateMode {
+    VM_STATE_NORMAL,
+    VM_STATE_REGISTERING_WORD
+};
+
 typedef struct ___VmState {
     struct ProgramOp *instructions;
+    unsigned long maxInstructions;
     unsigned long instructionsLength;
     unsigned long currentInstruction;
     ProgramStack stack;
+    CallStack callStack;
+    enum VmStateMode state;
+    struct {
+        DString name;
+        unsigned long startIndex;
+    } customWord;
 } *VmState;
 
 VmState CreateVm();

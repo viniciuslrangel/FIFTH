@@ -19,8 +19,8 @@
 #define NAME_STR "FIFTH"
 
 #define MAJOR_VERSION 0
-#define MINOR_VERSION 0
-#define PATCH_VERSION 1
+#define MINOR_VERSION 1
+#define PATCH_VERSION 0
 
 #ifndef NULL
 #define NULL (void*)0
