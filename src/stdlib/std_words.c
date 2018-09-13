@@ -36,6 +36,19 @@ static void stdlib_dup(ProgramStack stack) {
     PStack_push(stack, e);
 }
 
+static void stdlib_ddup(ProgramStack stack) {
+    struct PElement e1 = PStack_peekIndex(stack, 0);
+    struct PElement e2 = PStack_peekIndex(stack, 1);
+    if(e1.type == DATATYPE_STRING) {
+        e1.data.string = DString_copy(e1.data.string);
+    }
+    if(e2.type == DATATYPE_STRING) {
+        e2.data.string = DString_copy(e2.data.string);
+    }
+    PStack_push(stack, e2);
+    PStack_push(stack, e1);
+}
+
 static void stdlib_switch(ProgramStack stack) {
     struct PElement e1 = PStack_pop(stack);
     struct PElement e2 = PStack_pop(stack);
@@ -89,6 +102,7 @@ void RegisterStdWords() {
                 {"PRINT", stdlib_print},
                 {"PRINTLN", stdlib_println},
                 {"DUP", stdlib_dup},
+                {"DDUP", stdlib_ddup},
                 {"SWITCH", stdlib_switch},
                 {"NSWITCH", stdlib_nswitch},
                 {"NNSWITCH", stdlib_nnswitch},

@@ -15,8 +15,11 @@ enum {
     STATE_BLANK,
     STATE_NUMBER,
     STATE_STRING,
-    STATE_WORD
+    STATE_WORD,
+    STATE_COMMENT
 } state = STATE_BLANK;
+
+bool lineCommment;
 
 unsigned int currentLine = 0;
 unsigned int currentColumn = 0;
@@ -36,7 +39,13 @@ void Lexer(VmState vm, char *buffer, unsigned long length) {
 
         switch (state) {
             case STATE_BLANK: {
-                if ((c == '-' && IS_NUMBER(cNext) && cNext == '.') || c == '.' || isNumber) {
+                if (c == '/' && cNext == '/') {
+                    state = STATE_COMMENT;
+                    lineCommment = true;
+                } else if (c == '(') {
+                    state = STATE_COMMENT;
+                    lineCommment = false;
+                } else if ((c == '-' && IS_NUMBER(cNext) && cNext == '.') || c == '.' || isNumber) {
                     state = STATE_NUMBER;
                     stringStart = pos;
                 } else if (c == '"') {
@@ -100,6 +109,17 @@ void Lexer(VmState vm, char *buffer, unsigned long length) {
                 }
             }
                 break;
+            case STATE_COMMENT: {
+                if (lineCommment) {
+                    if (c == '\n' || c == '\r') {
+                        state = STATE_BLANK;
+                    }
+                } else if (c == ')') {
+                    state = STATE_BLANK;
+                } else if (eof) {
+                    TOKEN_ERROR("Unfinished comment");
+                }
+            }
         }
 
         if (c == '\n') {
