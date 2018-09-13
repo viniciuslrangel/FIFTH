@@ -12,8 +12,8 @@ static void stdlib_print(ProgramStack stack) {
     struct PElement ele = PStack_pop(stack);
     switch (ele.type) {
         case DATATYPE_STRING:
-            fputs(ele.data.string, stdout);
-            free(ele.data.string);
+            fputs(DString_raw(ele.data.string), stdout);
+            DString_delete(ele.data.string);
             break;
         case DATATYPE_NUMBER:
             printf("%lf", ele.data.number);
@@ -31,9 +31,7 @@ static void stdlib_println(ProgramStack stack) {
 static void stdlib_dup(ProgramStack stack) {
     struct PElement e = PStack_peek(stack);
     if(e.type == DATATYPE_STRING) {
-        char* copy = malloc(strlen(e.data.string) + 1);
-        strcpy(copy, e.data.string);
-        e.data.string = copy;
+        e.data.string = DString_copy(e.data.string);
     }
     PStack_push(stack, e);
 }
@@ -52,7 +50,8 @@ static void stdlib_tonum(ProgramStack stack) {
             PStack_push(stack, e);
             break;
         case DATATYPE_STRING:
-            PStack_push(stack, STACK_NUMBER(strtod(e.data.string, NULL)));
+            PStack_push(stack, STACK_NUMBER(strtod(DString_raw(e.data.string), NULL)));
+            DString_delete(e.data.string);
             break;
         default:
             FATAL("Stack corruption");

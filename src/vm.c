@@ -64,7 +64,7 @@ number_t RunVm(VmState vmState) {
                         PStack_push(vmState->stack, (struct PElement) {
                                 .type = DATATYPE_STRING,
                                 .data = {
-                                        .string = DString_raw(op.data.str)
+                                        .string = op.data.str
                                 }
                         });
                     }

@@ -6,6 +6,7 @@
 #define FIFTH_PROGRAM_STACK_H
 
 #include "base.h"
+#include "dynamic_string.h"
 
 enum DataType {
     DATATYPE_NUMBER,
@@ -14,7 +15,7 @@ enum DataType {
 
 union PData {
     number_t number;
-    char* string;
+    DString string;
 };
 
 struct PElement {
