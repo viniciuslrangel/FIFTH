@@ -8,7 +8,7 @@
 #include "../program_stack.h"
 #include "../words.h"
 
-void stdlib_print(ProgramStack stack) {
+static void stdlib_print(ProgramStack stack) {
     struct PElement ele = PStack_pop(stack);
     switch (ele.type) {
         case DATATYPE_STRING:
@@ -23,12 +23,12 @@ void stdlib_print(ProgramStack stack) {
     }
 }
 
-void stdlib_println(ProgramStack stack) {
+static void stdlib_println(ProgramStack stack) {
     stdlib_print(stack);
     putchar('\n');
 }
 
-void stdlib_dup(ProgramStack stack) {
+static void stdlib_dup(ProgramStack stack) {
     struct PElement e = PStack_peek(stack);
     if(e.type == DATATYPE_STRING) {
         char* copy = malloc(strlen(e.data.string) + 1);
@@ -38,14 +38,14 @@ void stdlib_dup(ProgramStack stack) {
     PStack_push(stack, e);
 }
 
-void stdlib_switch(ProgramStack stack) {
+static void stdlib_switch(ProgramStack stack) {
     struct PElement e1 = PStack_pop(stack);
     struct PElement e2 = PStack_pop(stack);
     PStack_push(stack, e1);
     PStack_push(stack, e2);
 }
 
-void stdlib_tonum(ProgramStack stack) {
+static void stdlib_tonum(ProgramStack stack) {
     struct PElement e = PStack_pop(stack);
     switch (e.type) {
         case DATATYPE_NUMBER:
@@ -59,7 +59,7 @@ void stdlib_tonum(ProgramStack stack) {
     }
 }
 
-void stdlib_nswitch(ProgramStack stack) {
+static void stdlib_nswitch(ProgramStack stack) {
     number_t index;
     POP_NUMBER(index, stack);
 
@@ -69,7 +69,7 @@ void stdlib_nswitch(ProgramStack stack) {
     PStack_pushIndex(stack, e2, (unsigned int) index);
 }
 
-void stdlib_nnswitch(ProgramStack stack) {
+static void stdlib_nnswitch(ProgramStack stack) {
     number_t i1, i2;
     POP_NUMBER(i1, stack);
     POP_NUMBER(i2, stack);

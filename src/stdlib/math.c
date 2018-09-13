@@ -6,28 +6,28 @@
 #include "../program_stack.h"
 #include "../words.h"
 
-void math_add(ProgramStack stack) {
+static void math_add(ProgramStack stack) {
     number_t n1, n2;
     POP_NUMBER(n1, stack);
     POP_NUMBER(n2, stack);
     PStack_push(stack, STACK_NUMBER(n1 + n2));
 }
 
-void math_sub(ProgramStack stack) {
+static void math_sub(ProgramStack stack) {
     number_t n1, n2;
     POP_NUMBER(n1, stack);
     POP_NUMBER(n2, stack);
     PStack_push(stack, STACK_NUMBER(n1 - n2));
 }
 
-void math_mul(ProgramStack stack) {
+static void math_mul(ProgramStack stack) {
     number_t n1, n2;
     POP_NUMBER(n1, stack);
     POP_NUMBER(n2, stack);
     PStack_push(stack, STACK_NUMBER(n1 * n2));
 }
 
-void math_div(ProgramStack stack) {
+static void math_div(ProgramStack stack) {
     number_t n1, n2;
     POP_NUMBER(n1, stack);
     POP_NUMBER(n2, stack);
