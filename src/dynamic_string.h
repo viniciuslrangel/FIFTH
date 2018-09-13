@@ -105,4 +105,6 @@ bool DString_rawEqualsIgnoreCase(DString, char*);
  */
 DString DString_toUpperCase(DString);
 
+int DString_indexOf(DString, char);
+
 #endif //FIRSTLANG_DYNAMIC_STRING_H

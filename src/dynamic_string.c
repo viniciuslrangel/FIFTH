@@ -152,4 +152,13 @@ DString DString_toUpperCase(DString str) {
     return str;
 }
 
+int DString_indexOf(DString str, char c) {
+    for(int i = 0; i < str->length; ++i) {
+        if(str->raw[i] == c) {
+            return i;
+        }
+    }
+    return -1;
+}
+
 #undef SIZE
