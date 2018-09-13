@@ -6,9 +6,10 @@
 #include "lexer.h"
 #include "vm.h"
 #include "words.h"
+#include "file_utils.h"
 
 #define IS_NUMBER(x) ('0' <= (x) && (x) <= '9')
-#define TOKEN_ERROR(x) FATAL("Error on token %d:%d\n%s", currentLine, currentColumn, x)
+#define TOKEN_ERROR(x) FATAL("Error on token %d:%d (%s)\n%s", currentLine, currentColumn, filePath, x)
 #define BLANK() state = STATE_BLANK
 
 enum {
@@ -16,7 +17,8 @@ enum {
     STATE_NUMBER,
     STATE_STRING,
     STATE_WORD,
-    STATE_COMMENT
+    STATE_COMMENT,
+    STATE_INCLUDE
 } state = STATE_BLANK;
 
 bool lineCommment;
@@ -26,7 +28,7 @@ unsigned int currentColumn = 0;
 
 unsigned long stringStart;
 
-void Lexer(VmState vm, char *buffer, unsigned long length) {
+void Lexer(VmState vm, char *filePath, char *buffer, unsigned long length) {
     unsigned long pos = 0;
     while (pos <= length) {
 
@@ -35,7 +37,8 @@ void Lexer(VmState vm, char *buffer, unsigned long length) {
 
         bool isNumber = IS_NUMBER(c);
         bool eof = pos == length;
-        bool isBlank = c == ' ' || c == '\n' || c == '\r' || eof;
+        bool isNewLine = c == '\n' || c == '\r';
+        bool isBlank = c == ' ' || isNewLine || eof;
 
         switch (state) {
             case STATE_BLANK: {
@@ -45,6 +48,9 @@ void Lexer(VmState vm, char *buffer, unsigned long length) {
                 } else if (c == '(') {
                     state = STATE_COMMENT;
                     lineCommment = false;
+                } else if (c == '<') {
+                    state = STATE_INCLUDE;
+                    stringStart = pos;
                 } else if ((c == '-' && (IS_NUMBER(cNext) || cNext == '.')) || c == '.' || isNumber) {
                     state = STATE_NUMBER;
                     stringStart = pos;
@@ -109,9 +115,37 @@ void Lexer(VmState vm, char *buffer, unsigned long length) {
                 }
             }
                 break;
+            case STATE_INCLUDE: {
+                if (isNewLine || eof) {
+                    TOKEN_ERROR("Invalid file name");
+                } else if (c == '>') {
+                    char *s = malloc(pos - stringStart);
+                    for (int i = 1; i < pos - stringStart; ++i) {
+                        s[i - 1] = buffer[stringStart + i];
+                    }
+                    s[pos - stringStart] = 0;
+
+                    char *newBuffer;
+                    unsigned long newLength = readFile(s, &newBuffer);
+                    if (newLength) {
+                        unsigned int numColumn = currentColumn;
+                        unsigned int numLine = currentLine;
+                        currentColumn = 0;
+                        currentLine = 0;
+                        state = STATE_BLANK;
+                        Lexer(vm, s, newBuffer, newLength);
+                        state = STATE_BLANK;
+                        currentLine = numLine;
+                        currentColumn = numColumn;
+                    } else {
+                        ERRORLN("Could not read %s", s);
+                        TOKEN_ERROR("");
+                    }
+                }
+            }
             case STATE_COMMENT: {
                 if (lineCommment) {
-                    if (c == '\n' || c == '\r') {
+                    if (isNewLine) {
                         state = STATE_BLANK;
                     }
                 } else if (c == ')') {

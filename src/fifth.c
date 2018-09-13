@@ -20,7 +20,7 @@ int main(int argc, char** argv) {
 
     VmState vm = CreateVm();
 
-    Lexer(vm, data, length);
+    Lexer(vm, fileName, data, length);
 
     return (int) RunVm(vm);
 }

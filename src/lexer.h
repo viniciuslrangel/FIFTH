@@ -10,6 +10,6 @@
 
 void PushNumber(number_t number);
 
-void Lexer(VmState vmState, char *buffer, unsigned long length);
+void Lexer(VmState vmState, char* filePath, char *buffer, unsigned long length);
 
 #endif //FIFTH_LEXER_H
