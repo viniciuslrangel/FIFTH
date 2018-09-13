@@ -29,7 +29,8 @@ struct ProgramOp {
 
 enum VmStateMode {
     VM_STATE_NORMAL,
-    VM_STATE_REGISTERING_WORD
+    VM_STATE_REGISTERING_WORD,
+    VM_STATE_JUMPING
 };
 
 typedef struct ___VmState {
@@ -40,6 +41,8 @@ typedef struct ___VmState {
     ProgramStack stack;
     CallStack callStack;
     enum VmStateMode state;
+    unsigned int context;
+    unsigned int jumpToContext;
     struct {
         DString name;
         unsigned long startIndex;
