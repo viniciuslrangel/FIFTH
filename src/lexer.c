@@ -45,7 +45,7 @@ void Lexer(VmState vm, char *buffer, unsigned long length) {
                 } else if (c == '(') {
                     state = STATE_COMMENT;
                     lineCommment = false;
-                } else if ((c == '-' && IS_NUMBER(cNext) && cNext == '.') || c == '.' || isNumber) {
+                } else if ((c == '-' && (IS_NUMBER(cNext) || cNext == '.')) || c == '.' || isNumber) {
                     state = STATE_NUMBER;
                     stringStart = pos;
                 } else if (c == '"') {
