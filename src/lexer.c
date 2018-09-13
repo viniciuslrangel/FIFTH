@@ -88,7 +88,7 @@ void Lexer(VmState vm, char *buffer, unsigned long length) {
                     s[pos - stringStart - 1] = 0;
                     struct ProgramOp op;
                     op.op = OP_PUSH_S;
-                    op.data.str = DString_new(s);
+                    op.data.str = DString_create(s);
                     InsertInstruction(vm, op);
                 }
             }
@@ -103,7 +103,7 @@ void Lexer(VmState vm, char *buffer, unsigned long length) {
                     s[pos - stringStart] = 0;
                     struct ProgramOp op;
                     op.op = OP_WORD_CALL;
-                    DString word = DString_new(s);
+                    DString word = DString_create(s);
                     op.data.str = word;
                     InsertInstruction(vm, op);
                 }
