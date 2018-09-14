@@ -7,8 +7,7 @@
 
 unsigned long ReadFile(char *path, char **buffer) {
     FILE *f;
-	errno_t err;
-	if ((err = fopen_s(&f, path, "rb")) != 0)
+	if ((f = fopen(path, "rb")) == NULL)
         return 0UL;
     fseek(f, 0, SEEK_END);
     unsigned long length = (unsigned long) ftell(f);
