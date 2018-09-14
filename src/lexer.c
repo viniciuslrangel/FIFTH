@@ -3,6 +3,10 @@
 //
 
 #include <string.h>
+#ifdef _WIN32
+#else
+#include <unistd.h>
+#endif
 #include "lexer.h"
 #include "vm.h"
 #include "words.h"
@@ -119,14 +123,38 @@ void Lexer(VmState vm, char *filePath, char *buffer, unsigned long length) {
                 if (isNewLine || eof) {
                     TOKEN_ERROR("Invalid file name");
                 } else if (c == '>') {
-                    char *s = malloc(pos - stringStart);
+                    char *s = malloc(pos - stringStart - 1 + 6); // + .fifth length
                     for (unsigned long i = 1; i < pos - stringStart; ++i) {
                         s[i - 1] = buffer[stringStart + i];
                     }
-                    s[pos - stringStart] = 0;
+                    char *sP = s + pos - stringStart - 1;
+                    const char * sP_ = ".fifth";
+                    for(char i = 0; i < 6; i++) {
+                        sP[i] = sP_[i];
+                    }
+                    s[pos - stringStart - 1 + 6] = 0;
 
                     char *newBuffer;
-                    unsigned long newLength = ReadFile(s, &newBuffer);
+                    unsigned long newLength;
+#ifdef _WIN32
+                    // TODO Win32
+#else
+                    DString fileAbs = DString_create(realpath(filePath, NULL));
+                    int index = DString_lastIndexOf(fileAbs, '/');
+                    DString fileDir = DString_substr(fileAbs, 0, index);
+                    DString_delete(fileAbs);
+
+                    char wd[4096];
+                    getcwd(wd, 4096);
+
+                    chdir(DString_raw(fileDir));
+                    DString_delete(fileDir);
+
+                    newLength = ReadFile(s, &newBuffer);
+                    chdir(wd);
+#endif
+
+                    free(s);
                     if (newLength) {
                         unsigned int numColumn = currentColumn;
                         unsigned int numLine = currentLine;
