@@ -155,7 +155,16 @@ DString DString_toUpperCase(DString str) {
 int DString_indexOf(DString str, char c) {
     for(size_t i = 0; i < str->length; ++i) {
         if(str->raw[i] == c) {
-            return i;
+            return (int) i;
+        }
+    }
+    return -1;
+}
+
+int DString_lastIndexOf(DString str, char c) {
+    for(size_t i = str->length - 1; i <= str->length; --i) {
+        if(str->raw[i] == c) {
+            return (int) i;
         }
     }
     return -1;

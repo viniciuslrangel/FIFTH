@@ -107,4 +107,6 @@ DString DString_toUpperCase(DString);
 
 int DString_indexOf(DString, char);
 
+int DString_lastIndexOf(DString, char);
+
 #endif //FIRSTLANG_DYNAMIC_STRING_H
