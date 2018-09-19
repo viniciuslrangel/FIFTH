@@ -50,6 +50,7 @@ struct PElement PStack_peekIndex(ProgramStack stack, unsigned int index);
 }
 
 #define POP_NUMBER(x, y) __MACRO_FUNCTION_BODY( struct PElement e = PStack_pop(y); if (e.type != DATATYPE_NUMBER) FATAL("Number is required"); (x) = e.data.number; )
+#define POP_STRING(x, y) __MACRO_FUNCTION_BODY( struct PElement e = PStack_pop(y); if (e.type != DATATYPE_STRING) FATAL("Number is required"); (x) = e.data.string; )
 
 void PStack_push(ProgramStack stack, struct PElement in);
 
