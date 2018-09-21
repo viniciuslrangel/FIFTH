@@ -52,7 +52,7 @@ void Lexer(VmState vm, char *filePath, char *buffer, unsigned long length) {
                 } else if (c == '(') {
                     state = STATE_COMMENT;
                     lineCommment = false;
-                } else if (c == '<') {
+                } else if (c == '{') {
                     state = STATE_INCLUDE;
                     stringStart = pos;
                 } else if ((c == '-' && (IS_NUMBER(cNext) || cNext == '.')) || c == '.' || isNumber) {
@@ -122,7 +122,7 @@ void Lexer(VmState vm, char *filePath, char *buffer, unsigned long length) {
             case STATE_INCLUDE: {
                 if (isNewLine || eof) {
                     TOKEN_ERROR("Invalid file name");
-                } else if (c == '>') {
+                } else if (c == '}') {
                     char *s = malloc(pos - stringStart - 1 + 6); // + .fifth length
                     for (unsigned long i = 1; i < pos - stringStart; ++i) {
                         s[i - 1] = buffer[stringStart + i];
