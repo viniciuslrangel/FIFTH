@@ -35,5 +35,5 @@ unsigned long CallStack_pop(CallStack cs) {
 }
 
 bool CallStack_hasNext(CallStack cs) {
-    return BOOL(cs->current);
+    return (bool) cs->current;
 }
