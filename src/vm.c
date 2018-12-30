@@ -109,7 +109,7 @@ number_t RunVm(VmState vmState) {
                             struct FindWordResult r = FindWordByName(DString_raw(str));
                             if (r.native) {
                                 CHECK_NOT_NULL(r.data.native, "Invalid word");
-                                r.data.native(vmState->stack);
+                                r.data.native(vmState, vmState->stack);
                             } else {
                                 CallStack_push(vmState->callStack, vmState->currentInstruction);
                                 vmState->currentInstruction = r.data.startIndex;

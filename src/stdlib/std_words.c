@@ -10,7 +10,7 @@
 #include "../program_stack.h"
 #include "../words.h"
 
-#define FUNC(x) static void x(ProgramStack stack)
+#define FUNC(x) static void x(VmState vm, ProgramStack stack)
 
 FUNC(stdlib_print) {
     struct PElement ele = PStack_pop(stack);
@@ -28,7 +28,7 @@ FUNC(stdlib_print) {
 }
 
 FUNC(stdlib_println) {
-    stdlib_print(stack);
+    stdlib_print(vm, stack);
     putchar('\n');
 }
 
@@ -110,6 +110,15 @@ FUNC(stdlib_nnswitch) {
     PStack_pushIndex(stack, e2, (unsigned int) i1);
 }
 
+FUNC(stdlib_call) {
+    struct PElement e = PStack_pop(stack);
+    if(e.type != DATATYPE_STRING) {
+        FATAL("Call argument must be string");
+    }
+
+//    e.data.string
+}
+
 #undef FUNC
 
 void RegisterStdWords() {
@@ -121,7 +130,8 @@ void RegisterStdWords() {
                 {"SWITCH", stdlib_switch},
                 {"NSWITCH", stdlib_nswitch},
                 {"NNSWITCH", stdlib_nnswitch},
-                {"TONUM", stdlib_tonum}
+                {"TONUM", stdlib_tonum},
+                {"CALL", stdlib_call}
         };
     RegisterWords(wordEntry, sizeof(wordEntry) / sizeof(struct WordEntry));
     RegisterMathWords();

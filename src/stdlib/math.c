@@ -11,51 +11,55 @@ POP_NUMBER(n1, stack);\
 POP_NUMBER(n2, stack);\
 PStack_push(stack, STACK_NUMBER(x));
 
-static void math_add(ProgramStack stack) {
+#define FUNC(x) static void x(VmState vm, ProgramStack stack)
+
+FUNC(math_add) {
     TWO_OPERATOR(n1 + n2);
 }
 
-static void math_sub(ProgramStack stack) {
+FUNC(math_sub) {
     TWO_OPERATOR(n1 - n2);
 }
 
-static void math_mul(ProgramStack stack) {
+FUNC(math_mul) {
     TWO_OPERATOR(n1 * n2);
 }
 
-static void math_div(ProgramStack stack) {
+FUNC(math_div) {
     TWO_OPERATOR(n1 / n2);
 }
 
-static void math_less(ProgramStack stack) {
+FUNC(math_less) {
     TWO_OPERATOR(n1 < n2)
 }
 
-static void math_less_or_equals(ProgramStack stack) {
+FUNC(math_less_or_equals) {
     TWO_OPERATOR(n1 <= n2)
 }
 
-static void math_greater(ProgramStack stack) {
+FUNC(math_greater) {
     TWO_OPERATOR(n1 > n2)
 }
 
-static void math_greater_or_equals(ProgramStack stack) {
+FUNC(math_greater_or_equals) {
     TWO_OPERATOR(n1 >= n2)
 }
 
-static void math_equals(ProgramStack stack) {
+FUNC(math_equals) {
     TWO_OPERATOR(n1 == n2)
 }
 
-static void math_not_equals(ProgramStack stack) {
+FUNC(math_not_equals) {
     TWO_OPERATOR(n1 != n2)
 }
 
-static void math_inverse(ProgramStack stack) {
+FUNC(math_inverse) {
     number_t n1;
     POP_NUMBER(n1, stack);
     PStack_push(stack, STACK_NUMBER(!n1));
 }
+
+#undef FUNC
 
 void RegisterMathWords() {
     struct WordEntry wordEntry[] = {

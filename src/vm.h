@@ -17,8 +17,6 @@ enum OpCode {
     OP_WORD_CALL
 };
 
-typedef void(*WordCall)(ProgramStack);
-
 struct ProgramOp {
     enum OpCode op;
     union {
@@ -48,6 +46,8 @@ typedef struct ___VmState {
         unsigned long startIndex;
     } customWord;
 } *VmState;
+
+typedef void(*WordCall)(VmState, ProgramStack);
 
 VmState CreateVm();
 
