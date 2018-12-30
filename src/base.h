@@ -33,8 +33,8 @@
 #endif
 
 #define bool int8_t
-#define true ((int8_t )1)
-#define false ((int8_t )0)
+#define true (0 == 0)
+#define false (0 != 0)
 
 #define number_t double
 
