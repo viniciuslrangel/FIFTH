@@ -3,13 +3,16 @@
 //
 
 #include <errno.h>
+#include <stdlib.h>
 #include "std_words.h"
 #include "math.h"
 #include "string.h"
 #include "../program_stack.h"
 #include "../words.h"
 
-static void stdlib_print(ProgramStack stack) {
+#define FUNC(x) static void x(ProgramStack stack)
+
+FUNC(stdlib_print) {
     struct PElement ele = PStack_pop(stack);
     switch (ele.type) {
         case DATATYPE_STRING:
@@ -24,12 +27,12 @@ static void stdlib_print(ProgramStack stack) {
     }
 }
 
-static void stdlib_println(ProgramStack stack) {
+FUNC(stdlib_println) {
     stdlib_print(stack);
     putchar('\n');
 }
 
-static void stdlib_dup(ProgramStack stack) {
+FUNC(stdlib_dup) {
     struct PElement e = PStack_peek(stack);
     if(e.type == DATATYPE_STRING) {
         e.data.string = DString_copy(e.data.string);
@@ -37,7 +40,7 @@ static void stdlib_dup(ProgramStack stack) {
     PStack_push(stack, e);
 }
 
-static void stdlib_ddup(ProgramStack stack) {
+FUNC(stdlib_ddup) {
     struct PElement e1 = PStack_peekIndex(stack, 0);
     struct PElement e2 = PStack_peekIndex(stack, 1);
     if(e1.type == DATATYPE_STRING) {
@@ -50,14 +53,14 @@ static void stdlib_ddup(ProgramStack stack) {
     PStack_push(stack, e1);
 }
 
-static void stdlib_switch(ProgramStack stack) {
+FUNC(stdlib_switch) {
     struct PElement e1 = PStack_pop(stack);
     struct PElement e2 = PStack_pop(stack);
     PStack_push(stack, e1);
     PStack_push(stack, e2);
 }
 
-static void stdlib_tonum(ProgramStack stack) {
+FUNC(stdlib_tonum) {
     struct PElement e = PStack_pop(stack);
     switch (e.type) {
         case DATATYPE_NUMBER:
@@ -81,7 +84,7 @@ static void stdlib_tonum(ProgramStack stack) {
     }
 }
 
-static void stdlib_nswitch(ProgramStack stack) {
+FUNC(stdlib_nswitch) {
     number_t index;
     POP_NUMBER(index, stack);
 
@@ -91,7 +94,7 @@ static void stdlib_nswitch(ProgramStack stack) {
     PStack_pushIndex(stack, e2, (unsigned int) index);
 }
 
-static void stdlib_nnswitch(ProgramStack stack) {
+FUNC(stdlib_nnswitch) {
     number_t i1, i2;
     POP_NUMBER(i1, stack);
     POP_NUMBER(i2, stack);
@@ -106,6 +109,8 @@ static void stdlib_nnswitch(ProgramStack stack) {
     PStack_pushIndex(stack, e1, (unsigned int) i2);
     PStack_pushIndex(stack, e2, (unsigned int) i1);
 }
+
+#undef FUNC
 
 void RegisterStdWords() {
     struct WordEntry wordEntry[] = {
