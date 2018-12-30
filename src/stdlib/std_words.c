@@ -2,6 +2,7 @@
 // Created by vinic on 07/09/18.
 //
 
+#include <errno.h>
 #include "std_words.h"
 #include "math.h"
 #include "string.h"
@@ -62,9 +63,18 @@ static void stdlib_tonum(ProgramStack stack) {
         case DATATYPE_NUMBER:
             PStack_push(stack, e);
             break;
-        case DATATYPE_STRING:
-            PStack_push(stack, STACK_NUMBER(strtod(DString_raw(e.data.string), NULL)));
-            DString_delete(e.data.string);
+        case DATATYPE_STRING: {
+            char *err;
+            double r = strtod(DString_raw(e.data.string), &err);
+            if(err != NULL) {
+                PStack_push(stack, STACK_STR(DString_new("ERR")));
+            } else if(errno == ERANGE) {
+                PStack_push(stack, STACK_STR(DString_new("OVERFLOW")));
+            } else {
+                PStack_push(stack, STACK_NUMBER(r));
+                DString_delete(e.data.string);
+            }
+        }
             break;
         default:
             FATAL("Stack corruption");
