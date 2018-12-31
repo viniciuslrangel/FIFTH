@@ -84,6 +84,16 @@ FUNC(stdlib_ddup) {
     PStack_push(stack, e1);
 }
 
+FUNC(stdlib_drop) {
+    PStack_pop(stack);
+}
+
+FUNC(stdlib_ndrop) {
+    number_t index;
+    POP_NUMBER(index, stack);
+    PStack_popIndex(stack, (unsigned int) index);
+}
+
 FUNC(stdlib_switch) {
     struct PElement e1 = PStack_pop(stack);
     struct PElement e2 = PStack_pop(stack);
@@ -172,6 +182,8 @@ void RegisterStdWords() {
                 {"PRINTLN", stdlib_println},
                 {"DUP", stdlib_dup},
                 {"DDUP", stdlib_ddup},
+                {"DROP", stdlib_drop},
+                {"NDROP", stdlib_ndrop},
                 {"SWITCH", stdlib_switch},
                 {"NSWITCH", stdlib_nswitch},
                 {"NNSWITCH", stdlib_nnswitch},
