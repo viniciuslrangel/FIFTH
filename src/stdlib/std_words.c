@@ -12,6 +12,37 @@
 
 #define FUNC(x) static void x(VmState vm, ProgramStack stack)
 
+FUNC(stdlib_read) {
+    DString str = DString_new("");
+    char c;
+    while((c = (char) getc(stdin)) != '\n' && c != ' ' && c != 0) {
+        DString_appendChar(str, c);
+    }
+    PStack_push(stack, STACK_STR(str));
+}
+
+FUNC(stdlib_readln) {
+    DString str = DString_new("");
+    char c;
+    while((c = (char) getc(stdin)) != '\n' && c != 0) {
+        DString_appendChar(str, c);
+    }
+    PStack_push(stack, STACK_STR(str));
+}
+
+FUNC(stdlib_readnum) {
+    char num[60];
+    scanf("%s", num);
+    char *err;
+    number_t data = strtod(num, &err);
+    if(*err != '\0'){
+        PStack_push(stack, STACK_STR(DString_new("NaN")));
+    } else {
+        PStack_push(stack, STACK_NUMBER(data));
+    }
+
+}
+
 FUNC(stdlib_print) {
     struct PElement ele = PStack_pop(stack);
     switch (ele.type) {
@@ -126,10 +157,17 @@ FUNC(stdlib_call) {
     }
 }
 
+FUNC(stdlib_length) {
+    PStack_push(stack, STACK_NUMBER(PStack_length(stack)));
+}
+
 #undef FUNC
 
 void RegisterStdWords() {
     struct WordEntry wordEntry[] = {
+                {"READ", stdlib_read},
+                {"READLN", stdlib_readln},
+                {"READNUM", stdlib_readnum},
                 {"PRINT", stdlib_print},
                 {"PRINTLN", stdlib_println},
                 {"DUP", stdlib_dup},
@@ -138,7 +176,8 @@ void RegisterStdWords() {
                 {"NSWITCH", stdlib_nswitch},
                 {"NNSWITCH", stdlib_nnswitch},
                 {"TONUM", stdlib_tonum},
-                {"CALL", stdlib_call}
+                {"CALL", stdlib_call},
+                {"LENGTH", stdlib_length}
         };
     RegisterWords(wordEntry, sizeof(wordEntry) / sizeof(struct WordEntry));
     RegisterMathWords();
