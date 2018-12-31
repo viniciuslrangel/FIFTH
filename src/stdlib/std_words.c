@@ -115,8 +115,15 @@ FUNC(stdlib_call) {
     if(e.type != DATATYPE_STRING) {
         FATAL("Call argument must be string");
     }
-
-//    e.data.string
+    struct FindWordResult r = FindWordByName(DString_raw(DString_toUpperCase(e.data.string)));
+    DString_delete(e.data.string);
+    if (r.native) {
+        CHECK_NOT_NULL(r.data.native, "Invalid word");
+        r.data.native(vm, stack);
+    } else {
+        CallStack_push(vm->callStack, vm->currentInstruction);
+        vm->currentInstruction = r.data.startIndex;
+    }
 }
 
 #undef FUNC
