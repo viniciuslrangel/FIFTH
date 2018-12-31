@@ -27,8 +27,8 @@ enum {
 
 bool lineCommment;
 
-unsigned int currentLine = 0;
-unsigned int currentColumn = 0;
+unsigned int currentLine = 1;
+unsigned int currentColumn = 1;
 
 unsigned long stringStart;
 
@@ -43,10 +43,11 @@ void Lexer(VmState vm, char *filePath, char *buffer, unsigned long length) {
         bool eof = pos == length;
         bool isNewLine = c == '\n' || c == '\r';
         bool isBlank = c == ' ' || isNewLine || eof;
-
         switch (state) {
             case STATE_BLANK: {
-                if (c == '/' && cNext == '/') {
+                if(isBlank) {
+                    break;
+                } else if (c == '/' && cNext == '/') {
                     state = STATE_COMMENT;
                     lineCommment = true;
                 } else if (c == '(') {
@@ -61,7 +62,7 @@ void Lexer(VmState vm, char *filePath, char *buffer, unsigned long length) {
                 } else if (c == '"') {
                     state = STATE_STRING;
                     stringStart = pos;
-                } else if (!isBlank) {
+                } else {
                     c = UPPER(c);
                     if (0x21 <= c && c <= 0x7E) {
                         state = STATE_WORD;
@@ -185,7 +186,7 @@ void Lexer(VmState vm, char *filePath, char *buffer, unsigned long length) {
         }
 
         if (c == '\n') {
-            currentColumn = 0;
+            currentColumn = 1;
             currentLine++;
         } else {
             currentColumn++;
