@@ -106,12 +106,17 @@ number_t RunVm(VmState vmState) {
                             }
                             vmState->context--;
                         } else {
-                            struct FindWordResult r = FindWordByName(DString_raw(str));
+                            char *name    = DString_raw(str);
+                            bool noReturn = name[0] == '!';
+                            if (noReturn) name++;
+                            struct FindWordResult r = FindWordByName(name);
                             if (r.native) {
                                 CHECK_NOT_NULL(r.data.native, "Invalid word");
                                 r.data.native(vmState, vmState->stack);
                             } else {
-                                CallStack_push(vmState->callStack, vmState->currentInstruction);
+                                if (!noReturn) {
+                                    CallStack_push(vmState->callStack, vmState->currentInstruction);
+                                }
                                 vmState->currentInstruction = r.data.startIndex;
                             }
                         }
