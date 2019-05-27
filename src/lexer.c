@@ -37,7 +37,7 @@ void Lexer(VmState vm, char *filePath, char *buffer, unsigned long length) {
     while (pos <= length) {
 
         char c = buffer[pos];
-        char cNext = c ? buffer[pos + 1] : c;
+        char cNext = c ? buffer[pos + 1] : '\0';
 
         bool isNumber = IS_NUMBER(c);
         bool eof = pos == length;
