@@ -10,19 +10,19 @@
 VmState CreateVm() {
     VmState s = malloc(sizeof(struct ___VmState));
     s->instructionsLength = 10;
-    s->instructions = malloc(sizeof(struct ProgramOp) * s->instructionsLength);
+    s->instructions       = malloc(sizeof(struct ProgramOp) * s->instructionsLength);
     s->currentInstruction = 0;
-    s->stack = NULL;
-    s->callStack = CallStack_new();
-    s->state = VM_STATE_NORMAL;
-    s->context = 0;
-    s->jumpToContext = 0;
+    s->stack              = NULL;
+    s->callStack          = CallStack_new();
+    s->state              = VM_STATE_NORMAL;
+    s->context            = 0;
+    s->jumpToContext      = 0;
     return s;
 }
 
 void InsertInstruction(VmState state, struct ProgramOp op) {
     if (state->currentInstruction >= state->instructionsLength) {
-        state->instructionsLength = (unsigned long) (state->instructionsLength * 1.5);
+        state->instructionsLength   = (unsigned long) (state->instructionsLength * 1.5);
         CHECK_NOT_NULL(
                 state->instructions = realloc(state->instructions,
                                               sizeof(struct ProgramOp) * state->instructionsLength),
@@ -45,7 +45,7 @@ number_t RunVm(VmState vmState) {
 
     struct ProgramOp op;
     while (
-            (op = vmState->instructions[vmState->currentInstruction++]),
+            (op     = vmState->instructions[vmState->currentInstruction++]),
                     vmState->currentInstruction <= instructionCount
             ) {
         switch (vmState->state) {
@@ -78,9 +78,9 @@ number_t RunVm(VmState vmState) {
                             if (DString_length(str) < 2) {
                                 FATAL("Invalid word name %s", DString_raw(str));
                             } else {
-                                vmState->state = VM_STATE_REGISTERING_WORD;
+                                vmState->state                 = VM_STATE_REGISTERING_WORD;
                                 vmState->customWord.startIndex = vmState->currentInstruction;
-                                vmState->customWord.name = DString_substr(str, 1, -1);
+                                vmState->customWord.name       = DString_substr(str, 1, -1);
                             }
                         } else if (DString_rawEquals(str, ";")) {
                             if (CallStack_hasNext(vmState->callStack)) {
@@ -90,8 +90,8 @@ number_t RunVm(VmState vmState) {
                             }
                         } else if (DString_rawEquals(str, "IF")) {
                             vmState->jumpToContext = vmState->context++;
-                            bool t = false;
-                            struct PElement bData = PStack_pop(vmState->stack);
+                            bool            t = false;
+                            struct PElement bData  = PStack_pop(vmState->stack);
                             if (bData.type == DATATYPE_NUMBER) {
                                 t = bData.data.number != 0;
                             } else if (bData.type == DATATYPE_STRING) {
