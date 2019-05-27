@@ -48,7 +48,6 @@ FUNC(stdlib_print) {
     switch (ele.type) {
         case DATATYPE_STRING:
             fputs(DString_raw(ele.data.string), stdout);
-            DString_delete(ele.data.string);
             break;
         case DATATYPE_NUMBER:
             printf("%lf", ele.data.number);
@@ -116,7 +115,6 @@ FUNC(stdlib_tonum) {
                 PStack_push(stack, STACK_STR(DString_new("OVERFLOW")));
             } else {
                 PStack_push(stack, STACK_NUMBER(r));
-                DString_delete(e.data.string);
             }
         }
             break;
