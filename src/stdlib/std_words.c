@@ -14,8 +14,8 @@
 
 FUNC(stdlib_read) {
     DString str = DString_new("");
-    char c;
-    while((c = (char) getc(stdin)) != '\n' && c != ' ' && c != 0) {
+    char    c;
+    while ((c = (char) getc(stdin)) != '\n' && c != ' ' && c != 0) {
         DString_appendChar(str, c);
     }
     PStack_push(stack, STACK_STR(str));
@@ -23,19 +23,19 @@ FUNC(stdlib_read) {
 
 FUNC(stdlib_readln) {
     DString str = DString_new("");
-    char c;
-    while((c = (char) getc(stdin)) != '\n' && c != 0) {
+    char    c;
+    while ((c = (char) getc(stdin)) != '\n' && c != 0) {
         DString_appendChar(str, c);
     }
     PStack_push(stack, STACK_STR(str));
 }
 
 FUNC(stdlib_readnum) {
-    char num[60];
+    char     num[60];
     scanf("%s", num);
     char *err;
     number_t data = strtod(num, &err);
-    if(*err != '\0'){
+    if (*err != '\0') {
         PStack_push(stack, STACK_STR(DString_new("NaN")));
     } else {
         PStack_push(stack, STACK_NUMBER(data));
@@ -64,7 +64,7 @@ FUNC(stdlib_println) {
 
 FUNC(stdlib_dup) {
     struct PElement e = PStack_peek(stack);
-    if(e.type == DATATYPE_STRING) {
+    if (e.type == DATATYPE_STRING) {
         e.data.string = DString_copy(e.data.string);
     }
     PStack_push(stack, e);
@@ -73,10 +73,10 @@ FUNC(stdlib_dup) {
 FUNC(stdlib_ddup) {
     struct PElement e1 = PStack_peekIndex(stack, 0);
     struct PElement e2 = PStack_peekIndex(stack, 1);
-    if(e1.type == DATATYPE_STRING) {
+    if (e1.type == DATATYPE_STRING) {
         e1.data.string = DString_copy(e1.data.string);
     }
-    if(e2.type == DATATYPE_STRING) {
+    if (e2.type == DATATYPE_STRING) {
         e2.data.string = DString_copy(e2.data.string);
     }
     PStack_push(stack, e2);
@@ -107,11 +107,11 @@ FUNC(stdlib_tonum) {
             PStack_push(stack, e);
             break;
         case DATATYPE_STRING: {
-            char *err;
+            char   *err;
             double r = strtod(DString_raw(e.data.string), &err);
-            if(err != NULL) {
+            if (err != NULL) {
                 PStack_push(stack, STACK_STR(DString_new("ERR")));
-            } else if(errno == ERANGE) {
+            } else if (errno == ERANGE) {
                 PStack_push(stack, STACK_STR(DString_new("OVERFLOW")));
             } else {
                 PStack_push(stack, STACK_NUMBER(r));
@@ -137,7 +137,7 @@ FUNC(stdlib_nnswitch) {
     number_t i1, i2;
     POP_NUMBER(i1, stack);
     POP_NUMBER(i2, stack);
-    if(i1 < i2) {
+    if (i1 < i2) {
         number_t tmp = i1;
         i1 = i2;
         i2 = tmp;
@@ -149,9 +149,27 @@ FUNC(stdlib_nnswitch) {
     PStack_pushIndex(stack, e2, (unsigned int) i1);
 }
 
+FUNC(stdlib_cton) {
+    DString str;
+    POP_STRING(str, stack);
+    PStack_push(stack, STACK_NUMBER(
+            (number_t)(DString_length(str) ? DString_raw(str)[0] : 0)
+    ));
+    DString_delete(str);
+}
+
+FUNC(stdlib_ntoc) {
+    number_t i;
+    POP_NUMBER(i, stack);
+    char     c   = (char) i;
+    DString  str = DString_new("");
+    DString_appendChar(str, c);
+    PStack_push(stack, STACK_STR(str));
+}
+
 FUNC(stdlib_call) {
     struct PElement e = PStack_pop(stack);
-    if(e.type != DATATYPE_STRING) {
+    if (e.type != DATATYPE_STRING) {
         FATAL("Call argument must be string");
     }
     struct FindWordResult r = FindWordByName(DString_raw(DString_toUpperCase(e.data.string)));
@@ -173,22 +191,24 @@ FUNC(stdlib_length) {
 
 void RegisterStdWords() {
     struct WordEntry wordEntry[] = {
-                {"READ", stdlib_read},
-                {"READLN", stdlib_readln},
-                {"READNUM", stdlib_readnum},
-                {"PRINT", stdlib_print},
-                {"PRINTLN", stdlib_println},
-                {"DUP", stdlib_dup},
-                {"DDUP", stdlib_ddup},
-                {"DROP", stdlib_drop},
-                {"NDROP", stdlib_ndrop},
-                {"SWITCH", stdlib_switch},
-                {"NSWITCH", stdlib_nswitch},
-                {"NNSWITCH", stdlib_nnswitch},
-                {"TONUM", stdlib_tonum},
-                {"CALL", stdlib_call},
-                {"LENGTH", stdlib_length}
-        };
+            {"READ",     stdlib_read},
+            {"READLN",   stdlib_readln},
+            {"READNUM",  stdlib_readnum},
+            {"PRINT",    stdlib_print},
+            {"PRINTLN",  stdlib_println},
+            {"DUP",      stdlib_dup},
+            {"DDUP",     stdlib_ddup},
+            {"DROP",     stdlib_drop},
+            {"NDROP",    stdlib_ndrop},
+            {"SWITCH",   stdlib_switch},
+            {"NSWITCH",  stdlib_nswitch},
+            {"NNSWITCH", stdlib_nnswitch},
+            {"TONUM",    stdlib_tonum},
+            {"CTON",     stdlib_cton},
+            {"NTOC",     stdlib_ntoc},
+            {"CALL",     stdlib_call},
+            {"LENGTH",   stdlib_length}
+    };
     RegisterWords(wordEntry, sizeof(wordEntry) / sizeof(struct WordEntry));
     RegisterMathWords();
 }

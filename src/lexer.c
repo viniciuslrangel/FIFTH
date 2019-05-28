@@ -20,6 +20,7 @@ enum {
     STATE_BLANK,
     STATE_NUMBER,
     STATE_STRING,
+    STATE_CHAR,
     STATE_WORD,
     STATE_COMMENT,
     STATE_INCLUDE
@@ -62,6 +63,8 @@ void Lexer(VmState vm, char *filePath, char *buffer, unsigned long length) {
                 } else if (c == '"') {
                     state = STATE_STRING;
                     stringStart = pos;
+                } else if(c == '\'') {
+                    state = STATE_CHAR;
                 } else {
                     c = UPPER(c);
                     if (0x21 <= c && c <= 0x7E) {
@@ -104,6 +107,14 @@ void Lexer(VmState vm, char *filePath, char *buffer, unsigned long length) {
                 }
             }
                 break;
+            case STATE_CHAR: {
+                struct ProgramOp op;
+                op.op = OP_PUSH_N;
+                op.data.number = c;
+                InsertInstruction(vm, op);
+                BLANK();
+            }
+            break;
             case STATE_WORD: {
                 if (isBlank) {
                     BLANK();
