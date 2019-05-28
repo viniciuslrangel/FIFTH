@@ -17,6 +17,7 @@ static int setup(DString **state) {
 static int teardown(DString **state) {
     DString_delete((*state)[0]);
     DString_delete((*state)[1]);
+    free(*state);
     return 0;
 }
 

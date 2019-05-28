@@ -7,7 +7,11 @@ if (${ENABLE_TESTING_UNIT})
     )
 
     enable_testing()
-    find_library(CMOCKA_LIBRARY libcmocka.so.0)
+    if(WIN32)
+        find_library(CMOCKA_LIBRARY libcmocka.dll.a)
+    else()
+        find_library(CMOCKA_LIBRARY libcmocka.so.0)
+    endif()
 
     if (CMOCKA_LIBRARY)
         add_executable(fifth_test
