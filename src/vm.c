@@ -165,6 +165,7 @@ number_t RunVm(VmState vmState) {
         if (e.type == DATATYPE_NUMBER) {
             result = e.data.number;
         } else {
+            PRINTLN("%s", DString_raw(e.data.string));
             free(e.data.string);
         }
     }
