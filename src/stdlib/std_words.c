@@ -21,6 +21,10 @@ FUNC(stdlib_read) {
     PStack_push(stack, STACK_STR(str));
 }
 
+FUNC(stdlib_readc) {
+    PStack_push(stack, STACK_NUMBER(getc(stdin)));
+}
+
 FUNC(stdlib_readln) {
     DString str = DString_new("");
     char    c;
@@ -192,6 +196,7 @@ FUNC(stdlib_length) {
 void RegisterStdWords() {
     struct WordEntry wordEntry[] = {
             {"READ",     stdlib_read},
+            {"READC",    stdlib_readc},
             {"READLN",   stdlib_readln},
             {"READNUM",  stdlib_readnum},
             {"PRINT",    stdlib_print},
