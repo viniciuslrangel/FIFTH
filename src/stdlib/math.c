@@ -59,6 +59,18 @@ FUNC(math_inverse) {
     PStack_push(stack, STACK_NUMBER(!n1));
 }
 
+FUNC(math_logic_or) {
+    TWO_OPERATOR(n1 || n2)
+}
+
+FUNC(math_logic_and) {
+    TWO_OPERATOR(n1 && n2)
+}
+
+FUNC(math_logic_xor) {
+    TWO_OPERATOR((int) n1 ^ (int) n2)
+}
+
 #undef FUNC
 
 void RegisterMathWords() {
@@ -74,6 +86,9 @@ void RegisterMathWords() {
             {"=",  math_equals},
             {"!=", math_not_equals},
             {"!",  math_inverse},
+            {"||",  math_logic_or},
+            {"&&",  math_logic_and},
+            {"^^",  math_logic_xor}
     };
     RegisterWords(wordEntry, sizeof(wordEntry) / sizeof(struct WordEntry));
 }
