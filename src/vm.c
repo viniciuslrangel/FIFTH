@@ -107,7 +107,7 @@ number_t RunVm(VmState vmState) {
                             vmState->context--;
                         } else {
                             char *name    = DString_raw(str);
-                            bool noReturn = name[0] == '!';
+                            bool noReturn = DString_length(str) > 1 && name[0] == '!';
                             if (noReturn) name++;
                             struct FindWordResult r = FindWordByName(name);
                             if (r.native) {
